@@ -62,16 +62,6 @@
     margin:24px 0;
   }
   .dash-frame img{width:100%;display:block;}
-  .dash-placeholder{
-    aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;
-    font-family:'JetBrains Mono',monospace;color:var(--text-lo);font-size:13px;flex-direction:column;gap:10px;
-  }
-  .dash-placeholder .bars{display:flex;gap:5px;height:24px;align-items:flex-end;}
-  .dash-placeholder .bars i{width:5px;background:var(--border);border-radius:2px;}
-  .dash-placeholder .bars i:nth-child(1){height:30%;}
-  .dash-placeholder .bars i:nth-child(2){height:55%;background:var(--signal);}
-  .dash-placeholder .bars i:nth-child(3){height:80%;background:var(--signal);}
-  .dash-placeholder .bars i:nth-child(4){height:100%;background:var(--teal);}
 
   .kpi-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:10px;}
   .kpi-card{border:1px solid var(--border);border-radius:8px;padding:20px;background:var(--ink-2);}
@@ -145,10 +135,7 @@
 <section>
   <div class="section-label">Dashboard</div>
   <div class="dash-frame">
-    <div class="dash-placeholder">
-      <div class="bars"><i></i><i></i><i></i><i></i></div>
-      Dashboard screenshot — swap in assets/nova-gear/dashboard.png
-    </div>
+    <img src="assets/nova-gear/dashboard.png" alt="Nova Gear Store online analysis dashboard showing total revenue, customers, revenue by country, order status breakdown, revenue loss by country, and revenue trend by year">
   </div>
 </section>
 
