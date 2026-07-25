@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nova Gear Store Analysis — Gabriel Judith</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#10151A;
+    --ink-2:#161D24;
+    --signal:#FFB300;
+    --teal:#2FD9B0;
+    --coral:#FF6B5B;
+    --text-hi:#ECE9E1;
+    --text-lo:#9BA3A8;
+    --border:rgba(236,233,225,0.12);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--ink);color:var(--text-hi);font-family:'Inter',sans-serif;line-height:1.65;}
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:840px;margin:0 auto;padding:0 32px;}
+
+  nav{display:flex;justify-content:space-between;align-items:center;padding:28px 32px;max-width:840px;margin:0 auto;}
+  .logo{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px;}
+  .logo span{color:var(--signal);}
+  .back{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--text-lo);}
+  .back:hover{color:var(--text-hi);}
+
+  header.hero{padding:50px 32px 40px;max-width:840px;margin:0 auto;}
+  .eyebrow{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--teal);text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px;}
+  h1{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(30px,5vw,46px);letter-spacing:-0.02em;line-height:1.1;max-width:700px;}
+  .subtitle{color:var(--text-lo);font-size:16px;margin-top:16px;max-width:600px;}
+
+  .meta-row{display:flex;gap:32px;margin-top:32px;flex-wrap:wrap;}
+  .meta-item{font-family:'JetBrains Mono',monospace;font-size:12px;}
+  .meta-item .k{color:var(--text-lo);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:4px;font-size:11px;}
+  .meta-item .v{color:var(--text-hi);}
+
+  section{padding:44px 32px;max-width:840px;margin:0 auto;border-top:1px solid var(--border);}
+  .section-label{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--signal);text-transform:uppercase;letter-spacing:.08em;margin-bottom:20px;}
+  h2{font-family:'Space Grotesk',sans-serif;font-size:24px;margin-bottom:14px;letter-spacing:-0.01em;}
+  p{color:var(--text-lo);font-size:15px;margin-bottom:14px;}
+  p strong{color:var(--text-hi);font-weight:600;}
+
+  .obj-list{list-style:none;counter-reset:obj;}
+  .obj-list li{
+    counter-increment:obj;padding:16px 0;border-top:1px solid var(--border);
+    display:flex;gap:18px;
+  }
+  .obj-list li:first-child{border-top:none;}
+  .obj-list li::before{
+    content:counter(obj,decimal-leading-zero);
+    font-family:'JetBrains Mono',monospace;color:var(--signal);font-size:13px;flex-shrink:0;padding-top:2px;
+  }
+  .obj-list li span{color:var(--text-lo);font-size:14.5px;}
+
+  .dash-frame{
+    border:1px solid var(--border);border-radius:10px;overflow:hidden;background:var(--ink-2);
+    margin:24px 0;
+  }
+  .dash-frame img{width:100%;display:block;}
+  .dash-placeholder{
+    aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;
+    font-family:'JetBrains Mono',monospace;color:var(--text-lo);font-size:13px;flex-direction:column;gap:10px;
+  }
+  .dash-placeholder .bars{display:flex;gap:5px;height:24px;align-items:flex-end;}
+  .dash-placeholder .bars i{width:5px;background:var(--border);border-radius:2px;}
+  .dash-placeholder .bars i:nth-child(1){height:30%;}
+  .dash-placeholder .bars i:nth-child(2){height:55%;background:var(--signal);}
+  .dash-placeholder .bars i:nth-child(3){height:80%;background:var(--signal);}
+  .dash-placeholder .bars i:nth-child(4){height:100%;background:var(--teal);}
+
+  .kpi-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:10px;}
+  .kpi-card{border:1px solid var(--border);border-radius:8px;padding:20px;background:var(--ink-2);}
+  .kpi-card .name{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--teal);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px;}
+  .kpi-card .desc{font-size:13.5px;color:var(--text-lo);}
+
+  .finding{
+    border-left:2px solid var(--signal);padding-left:20px;margin-bottom:32px;
+  }
+  .finding .q{font-family:'Space Grotesk',sans-serif;font-size:18px;margin-bottom:8px;}
+  .finding .f{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--signal);margin-bottom:10px;text-transform:uppercase;letter-spacing:.03em;}
+  .finding .f::before{content:"Finding — ";color:var(--text-lo);}
+  .finding .i{color:var(--text-lo);font-size:14.5px;}
+
+  .rec-list{list-style:none;}
+  .rec-list li{
+    padding:14px 0 14px 24px;border-top:1px solid var(--border);position:relative;color:var(--text-lo);font-size:14.5px;
+  }
+  .rec-list li:first-child{border-top:none;}
+  .rec-list li::before{content:"→";position:absolute;left:0;color:var(--teal);}
+  .rec-list li strong{color:var(--text-hi);}
+
+  .conclusion{
+    background:var(--ink-2);border:1px solid var(--border);border-radius:10px;padding:28px;
+  }
+
+  .limitation{
+    border:1px dashed var(--border);border-radius:8px;padding:18px 20px;font-size:13.5px;color:var(--text-lo);
+  }
+
+  footer{padding:40px 32px;max-width:840px;margin:0 auto;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--text-lo);border-top:1px solid var(--border);text-align:center;}
+  footer a:hover{color:var(--signal);}
+
+  @media(max-width:600px){
+    .kpi-grid{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">gabriel<span>.</span>judith</div>
+  <a href="index.html" class="back">← Back to projects</a>
+</nav>
+
+<header class="hero">
+  <div class="eyebrow">Case Study — Retail Analytics</div>
+  <h1>Nova Gear Store: Revenue, Markets & Loss Analysis</h1>
+  <p class="subtitle">A 5-year retail transaction analysis across 8 countries — examining revenue trends, market behavior, and where the business is losing money.</p>
+  <div class="meta-row">
+    <div class="meta-item"><span class="k">Tool</span><span class="v">Microsoft Excel</span></div>
+    <div class="meta-item"><span class="k">Records</span><span class="v">9,850 orders (cleaned)</span></div>
+    <div class="meta-item"><span class="k">Markets</span><span class="v">8 countries · 5 years</span></div>
+  </div>
+</header>
+
+<section>
+  <div class="section-label">Introduction</div>
+  <p>This capstone project analyzes a Nova Gear retail dataset containing transaction records across 8 countries over a 5-year period. The goal was to understand revenue performance, customer behavior across markets, and identify where the business was losing money.</p>
+</section>
+
+<section>
+  <div class="section-label">Objectives</div>
+  <ol class="obj-list">
+    <li><span><strong>Revenue trend by market —</strong> examine how revenue changed across the 8 markets over 5 years and identify which markets are growing or declining.</span></li>
+    <li><span><strong>Market behavior —</strong> determine whether customers across the 8 markets behave as one unified market or as 8 distinct markets.</span></li>
+    <li><span><strong>Revenue loss —</strong> identify where the business is losing money, quantify the losses, and pinpoint which markets and products are most responsible.</span></li>
+  </ol>
+</section>
+
+<section>
+  <div class="section-label">Dashboard</div>
+  <div class="dash-frame">
+    <div class="dash-placeholder">
+      <div class="bars"><i></i><i></i><i></i><i></i></div>
+      Dashboard screenshot — swap in assets/nova-gear/dashboard.png
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="section-label">Key KPIs</div>
+  <div class="kpi-grid">
+    <div class="kpi-card"><div class="name">Total Revenue</div><div class="desc">Sum of revenue from completed orders only — refunds and cancellations excluded.</div></div>
+    <div class="kpi-card"><div class="name">Revenue by Country</div><div class="desc">Total revenue generated per market, tracked across the 5-year period.</div></div>
+    <div class="kpi-card"><div class="name">Order Completion Rate</div><div class="desc">Share of orders successfully completed vs. cancelled or refunded.</div></div>
+    <div class="kpi-card"><div class="name">Revenue Loss</div><div class="desc">Total value lost to cancellations and refunds, broken down by country and product.</div></div>
+    <div class="kpi-card"><div class="name">Order Volume by Country</div><div class="desc">Number of orders placed per market — a measure of market activity.</div></div>
+    <div class="kpi-card"><div class="name">Loss by Product</div><div class="desc">Combined refund + cancellation value per product — flags the most problematic SKUs.</div></div>
+  </div>
+</section>
+
+<section>
+  <div class="section-label">Findings & Insights</div>
+
+  <div class="finding">
+    <div class="q">1. What changed? Revenue by country and over time</div>
+    <div class="f">Total revenue grew from $689,219 (2021) to $1,497,777 (2025) — more than double</div>
+    <div class="i">The USA remained the largest and fastest-growing market by absolute value, rising from $209,193 to $432,099. But the more striking story is Nigeria, which grew nearly 6x (from $34,742 to $218,384), and Kenya, which followed a similar trajectory (from $31,811 to $176,473) — making them the fastest-growing emerging markets. Germany was the only market in decline, dropping 45% from $136,268 to $75,080, with the decline beginning in 2023. China grew overall but dipped in 2024 before recovering, suggesting some instability worth monitoring. 2023 stands out as a turning point — the year Nigeria and Kenya accelerated while Germany began its consistent decline.</div>
+  </div>
+
+  <div class="finding">
+    <div class="q">2. Do the 8 markets behave like one market, or eight?</div>
+    <div class="f">8 distinct markets — confirmed by differing order volume, spend, and return behavior</div>
+    <div class="i">The USA dominates order volume with 2,567 orders — the most active market by transaction count. Overall, 91.98% of orders were completed successfully, with 8.02% cancelled or refunded. Notably, the USA also recorded the highest rate of refunds and cancellations of any market across all 5 years — meaning the market driving the most volume is also carrying the highest revenue-loss risk. These differences in spending behavior, order volume, and return rates confirm the 8 markets do not behave uniformly and should be treated as 8 distinct markets, not one.</div>
+  </div>
+
+  <div class="finding">
+    <div class="q">3. Where is the business losing money?</div>
+    <div class="f">$372,264 lost total — Cancellations ($215,799) outweigh Refunds ($156,465)</div>
+    <div class="i">Cancellations being the larger share suggests checkout abandonment is a bigger problem than product dissatisfaction after purchase. At the country level, the USA recorded the highest loss at $112,848 — 30% of all losses across the 8 markets — despite (or because of) being the top revenue generator. At the product level, the Dell XPS 13 had the highest combined loss at $51,063, making it the most problematic product in the dataset. The MacBook Air M2 showed a different pattern: low refunds ($3,567) but very high cancellations ($27,855) — suggesting customers want the product but abandon it at checkout, likely due to its premium price point.</div>
+  </div>
+</section>
+
+<section>
+  <div class="section-label">Recommendations</div>
+  <ul class="rec-list">
+    <li><strong>Shift focus and budget away from Germany</strong> toward Nigeria and Kenya, which show the strongest growth potential.</li>
+    <li><strong>Treat each of the 8 markets as distinct</strong> — develop separate marketing and pricing strategies rather than a one-size-fits-all approach.</li>
+    <li><strong>Investigate USA checkout abandonment</strong> specifically, since it drives the most revenue but also the most loss.</li>
+    <li><strong>Reduce Dell XPS 13 supply by at least 50%</strong> to limit exposure from its high combined loss.</li>
+    <li><strong>Introduce flexible payment options for premium products</strong> like the MacBook Air M2 to reduce cart/checkout abandonment.</li>
+  </ul>
+</section>
+
+<section>
+  <div class="section-label">Limitations</div>
+  <div class="limitation">No cost column was available in the dataset, so gross profit could not be fully calculated — this analysis is based on revenue and loss figures only.</div>
+</section>
+
+<section>
+  <div class="section-label">Conclusion</div>
+  <div class="conclusion">
+    <p style="margin-bottom:0;">Revenue across the 8 markets more than doubled over 5 years, from $689,219 to $1,497,777, with Nigeria and Kenya emerging as the fastest-growing markets. However, the business lost $372,264 to cancellations and refunds, with the USA — its top market — accounting for 30% of all losses. Addressing checkout abandonment, protecting high-growth markets, and managing problematic products like the Dell XPS 13 will be key to sustaining growth going forward.</p>
+  </div>
+</section>
+
+<footer>
+  <a href="mailto:gabrielugonnajudith@gmail.com">gabrielugonnajudith@gmail.com</a> · <a href="index.html">← Back to portfolio</a>
+</footer>
+
+</body>
+</html>
