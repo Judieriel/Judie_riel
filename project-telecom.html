@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Telecom Churn & Revenue Analysis — Gabriel Judith</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#10151A;
+    --ink-2:#161D24;
+    --signal:#FFB300;
+    --teal:#2FD9B0;
+    --coral:#FF6B5B;
+    --text-hi:#ECE9E1;
+    --text-lo:#9BA3A8;
+    --border:rgba(236,233,225,0.12);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--ink);color:var(--text-hi);font-family:'Inter',sans-serif;line-height:1.65;}
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:840px;margin:0 auto;padding:0 32px;}
+
+  nav{display:flex;justify-content:space-between;align-items:center;padding:28px 32px;max-width:840px;margin:0 auto;}
+  .logo{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px;}
+  .logo span{color:var(--signal);}
+  .back{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--text-lo);}
+  .back:hover{color:var(--text-hi);}
+
+  header.hero{padding:50px 32px 40px;max-width:840px;margin:0 auto;}
+  .eyebrow{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--teal);text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px;}
+  h1{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(30px,5vw,46px);letter-spacing:-0.02em;line-height:1.1;max-width:700px;}
+  .subtitle{color:var(--text-lo);font-size:16px;margin-top:16px;max-width:600px;}
+
+  .meta-row{display:flex;gap:32px;margin-top:32px;flex-wrap:wrap;}
+  .meta-item{font-family:'JetBrains Mono',monospace;font-size:12px;}
+  .meta-item .k{color:var(--text-lo);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:4px;font-size:11px;}
+  .meta-item .v{color:var(--text-hi);}
+
+  section{padding:44px 32px;max-width:840px;margin:0 auto;border-top:1px solid var(--border);}
+  .section-label{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--signal);text-transform:uppercase;letter-spacing:.08em;margin-bottom:20px;}
+  h2{font-family:'Space Grotesk',sans-serif;font-size:24px;margin-bottom:14px;letter-spacing:-0.01em;}
+  p{color:var(--text-lo);font-size:15px;margin-bottom:14px;}
+  p strong{color:var(--text-hi);font-weight:600;}
+
+  .obj-list{list-style:none;counter-reset:obj;}
+  .obj-list li{
+    counter-increment:obj;padding:16px 0;border-top:1px solid var(--border);
+    display:flex;gap:18px;
+  }
+  .obj-list li:first-child{border-top:none;}
+  .obj-list li::before{
+    content:counter(obj,decimal-leading-zero);
+    font-family:'JetBrains Mono',monospace;color:var(--signal);font-size:13px;flex-shrink:0;padding-top:2px;
+  }
+  .obj-list li span{color:var(--text-lo);font-size:14.5px;}
+
+  .dash-frame{
+    border:1px solid var(--border);border-radius:10px;overflow:hidden;background:var(--ink-2);
+    margin:24px 0;
+  }
+  .dash-frame img{width:100%;display:block;}
+  .dash-placeholder{
+    aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;
+    font-family:'JetBrains Mono',monospace;color:var(--text-lo);font-size:13px;flex-direction:column;gap:10px;
+  }
+  .dash-placeholder .bars{display:flex;gap:5px;height:24px;align-items:flex-end;}
+  .dash-placeholder .bars i{width:5px;background:var(--border);border-radius:2px;}
+  .dash-placeholder .bars i:nth-child(1){height:30%;}
+  .dash-placeholder .bars i:nth-child(2){height:55%;background:var(--signal);}
+  .dash-placeholder .bars i:nth-child(3){height:80%;background:var(--signal);}
+  .dash-placeholder .bars i:nth-child(4){height:100%;background:var(--teal);}
+
+  .kpi-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:10px;}
+  .kpi-card{border:1px solid var(--border);border-radius:8px;padding:20px;background:var(--ink-2);}
+  .kpi-card .name{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--teal);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px;}
+  .kpi-card .desc{font-size:13.5px;color:var(--text-lo);}
+
+  .finding{
+    border-left:2px solid var(--signal);padding-left:20px;margin-bottom:32px;
+  }
+  .finding .q{font-family:'Space Grotesk',sans-serif;font-size:18px;margin-bottom:8px;}
+  .finding .f{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--signal);margin-bottom:10px;text-transform:uppercase;letter-spacing:.03em;}
+  .finding .f::before{content:"Finding — ";color:var(--text-lo);}
+  .finding .i{color:var(--text-lo);font-size:14.5px;}
+
+  .rec-list{list-style:none;}
+  .rec-list li{
+    padding:14px 0 14px 24px;border-top:1px solid var(--border);position:relative;color:var(--text-lo);font-size:14.5px;
+  }
+  .rec-list li:first-child{border-top:none;}
+  .rec-list li::before{content:"→";position:absolute;left:0;color:var(--teal);}
+  .rec-list li strong{color:var(--text-hi);}
+
+  .conclusion{
+    background:var(--ink-2);border:1px solid var(--border);border-radius:10px;padding:28px;
+  }
+
+  footer{padding:40px 32px;max-width:840px;margin:0 auto;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--text-lo);border-top:1px solid var(--border);text-align:center;}
+  footer a:hover{color:var(--signal);}
+
+  @media(max-width:600px){
+    .kpi-grid{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">gabriel<span>.</span>judith</div>
+  <a href="index.html" class="back">← Back to projects</a>
+</nav>
+
+<header class="hero">
+  <div class="eyebrow">Case Study — Telecom Analytics</div>
+  <h1>Customer Churn & Revenue Analysis</h1>
+  <p class="subtitle">A full KPI-driven analysis of a Nigerian telecom customer dataset — cleaning, metric design, and business insight, built entirely in Excel.</p>
+  <div class="meta-row">
+    <div class="meta-item"><span class="k">Tool</span><span class="v">Microsoft Excel</span></div>
+    <div class="meta-item"><span class="k">Records</span><span class="v">Customer-level dataset</span></div>
+    <div class="meta-item"><span class="k">Focus</span><span class="v">Churn & Retention</span></div>
+  </div>
+</header>
+
+<section>
+  <div class="section-label">Objectives</div>
+  <ol class="obj-list">
+    <li><span><strong>Revenue by plan —</strong> determine which subscription plan generates the highest revenue, to identify the most profitable product offering.</span></li>
+    <li><span><strong>Churn by segment —</strong> identify the customer segment(s) with the highest churn rate, to pinpoint groups most at risk of attrition.</span></li>
+    <li><span><strong>Churn drivers —</strong> examine the factors associated with customer churn, to inform targeted retention strategies.</span></li>
+  </ol>
+</section>
+
+<section>
+  <div class="section-label">Dashboard</div>
+  <div class="dash-frame">
+    <div class="dash-placeholder">
+      <div class="bars"><i></i><i></i><i></i><i></i></div>
+      Dashboard screenshot — swap in dashboard.png
+    </div>
+  </div>
+  <p>Replace the placeholder above with your exported dashboard image (save it as <strong>assets/dashboard.png</strong> and update the <code>src</code> in this file).</p>
+</section>
+
+<section>
+  <div class="section-label">Key KPIs</div>
+  <div class="kpi-grid">
+    <div class="kpi-card"><div class="name">Total Customers</div><div class="desc">Baseline size of the customer base — denominator for every rate-based KPI.</div></div>
+    <div class="kpi-card"><div class="name">Total Monthly Revenue</div><div class="desc">Sum of monthly spend across all customers — core financial performance metric.</div></div>
+    <div class="kpi-card"><div class="name">Average Tenure</div><div class="desc">Average months a customer stays — a proxy for loyalty and relationship length.</div></div>
+    <div class="kpi-card"><div class="name">Revenue Lost to Churn</div><div class="desc">Monthly revenue tied to churned customers — the direct financial cost of attrition.</div></div>
+    <div class="kpi-card"><div class="name">Retention Rate</div><div class="desc">Share of customers still active — the inverse of churn rate.</div></div>
+    <div class="kpi-card"><div class="name">Churn Rate by Segment</div><div class="desc">Churn broken down by plan, age group, NPS status, and complaint category.</div></div>
+  </div>
+</section>
+
+<section>
+  <div class="section-label">Findings & Insights</div>
+
+  <div class="finding">
+    <div class="q">Which plan generates the most revenue?</div>
+    <div class="f">Postpaid — ₦4.0M, ahead of Data Only (₦3.8M) and Prepaid (₦3.3M)</div>
+    <div class="i">Postpaid is the most valuable segment by total contribution, with Data Only close behind — signaling strong demand for data-centric plans worth investing in further.</div>
+  </div>
+
+  <div class="finding">
+    <div class="q">Which segment churns the most?</div>
+    <div class="f">Mature Adults (45–54) — highest churn rate of any age group</div>
+    <div class="i">Older, typically loyal customers churning most is unusual — pointing to a pricing, service, or plan-fit issue rather than general market volatility. This group carries higher spend, so losing them likely costs more.</div>
+  </div>
+
+  <div class="finding">
+    <div class="q">What factors are associated with churn?</div>
+    <div class="f">Poor coverage (top complaint) · Passive NPS customers (28.7% churn) · Long-tenure customers (26.8 months avg.)</div>
+    <div class="i">Churn isn't driven by new or vocal customers — it's driven by established, seemingly satisfied customers who disengage quietly. Coverage is the leading complaint tied to churn, and Passives churn more than Detractors because they never raise a complaint before leaving.</div>
+  </div>
+</section>
+
+<section>
+  <div class="section-label">Recommendations</div>
+  <ul class="rec-list">
+    <li><strong>Protect the Postpaid segment</strong> and grow Data Only offerings, while reviewing Prepaid's pricing and bundle value.</li>
+    <li><strong>Build loyalty touchpoints</strong> for customers approaching the 24-month mark, before value fatigue sets in.</li>
+    <li><strong>Prioritize Mature Adults</strong> for personalized retention — plan reviews, loyalty discounts, service check-ins.</li>
+    <li><strong>Invest in network coverage</strong> in affected regions — the leading churn-linked complaint is a product issue, not a service one.</li>
+    <li><strong>Proactively engage Passive NPS customers</strong> through check-ins and small loyalty nudges, since they give no warning before leaving.</li>
+  </ul>
+</section>
+
+<section>
+  <div class="section-label">Conclusion</div>
+  <div class="conclusion">
+    <p style="margin-bottom:0;">Churn in this dataset isn't mainly caused by new or unhappy customers who complain — it's driven by long-term customers who quietly leave without warning. This shifts the recommended strategy from reacting to complaints toward proactively monitoring tenure, NPS trends, and engagement. Improving network coverage and rewarding long-term customers are the two highest-impact actions to reduce churn and protect revenue.</p>
+  </div>
+</section>
+
+<footer>
+  <a href="mailto:gabrielugonnajudith@gmail.com">gabrielugonnajudith@gmail.com</a> · <a href="index.html">← Back to portfolio</a>
+</footer>
+
+</body>
+</html>
